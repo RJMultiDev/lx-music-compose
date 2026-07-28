@@ -1,41 +1,43 @@
 <p align="center"><a href="https://github.com/lyswhut/lx-music-mobile"><img width="200" src="https://github.com/lyswhut/lx-music-mobile/blob/master/doc/images/icon.png" alt="lx-music logo"></a></p>
 
-<h1 align="center">LX Music 移动版</h1>
+<h1 align="center">LX Music Compose</h1>
 
 <p align="center">
-  <a href="https://github.com/lyswhut/lx-music-mobile/releases"><img src="https://img.shields.io/github/release/lyswhut/lx-music-mobile" alt="Release version"></a>
-  <a href="https://github.com/lyswhut/lx-music-mobile/actions/workflows/release.yml"><img src="https://github.com/lyswhut/lx-music-mobile/workflows/Build/badge.svg" alt="Build status"></a>
-  <a href="https://github.com/lyswhut/lx-music-mobile/actions/workflows/beta-pack.yml"><img src="https://github.com/lyswhut/lx-music-mobile/workflows/Build%20Beta/badge.svg" alt="Build status"></a>
-  <a href="https://github.com/facebook/react-native"><img src="https://img.shields.io/github/package-json/dependency-version/lyswhut/lx-music-mobile/react-native/master" alt="React native version"></a>
-  <!-- <a href="https://github.com/lyswhut/lx-music-mobile/releases"><img src="https://img.shields.io/github/downloads/lyswhut/lx-music-mobile/latest/total" alt="Downloads"></a> -->
-  <a href="https://github.com/lyswhut/lx-music-mobile/tree/dev"><img src="https://img.shields.io/github/package-json/v/lyswhut/lx-music-mobile/dev" alt="Dev branch version"></a>
-  <!-- <a href="https://github.com/lyswhut/lx-music-mobile/blob/master/LICENSE"><img src="https://img.shields.io/github/license/lyswhut/lx-music-mobile" alt="License"></a> -->
+  <a href="https://github.com/guoyujie666/lx-music-compose/releases"><img src="https://img.shields.io/github/v/release/guoyujie666/lx-music-compose" alt="Release version"></a>
+  <a href="https://github.com/guoyujie666/lx-music-compose/actions"><img src="https://img.shields.io/github/actions/workflow/status/guoyujie666/lx-music-compose/release.yml" alt="Build status"></a>
+  <img src="https://img.shields.io/badge/Powered%20by-Compose-4285F4?logo=jetpackcompose&logoColor=white" alt="Compose">
+  <a href="https://github.com/guoyujie666/lx-music-compose/blob/dev/LICENSE"><img src="https://img.shields.io/github/license/guoyujie666/lx-music-compose" alt="License"></a>
 </p>
 
-<p align="center">一个基于 React Native 开发的音乐软件</p>
+<p align="center">一个基于 <strong>Jetpack Compose</strong> 开发的 Android 音乐播放器</p>
+<p align="center">本项目是 <a href="https://github.com/lyswhut/lx-music-mobile">LX Music 移动版</a> 的 Compose 重写分支</p>
 
 ## 说明
 
 所用技术栈：
 
-- React Native
-- Redux
+- [Jetpack Compose](https://developer.android.com/compose) + [Material 3](https://m3.material.io/)
+- [Media3 ExoPlayer](https://developer.android.com/media/media3/exoplayer) — 音频播放
+- [Hilt](https://dagger.dev/hilt/) — 依赖注入
+- [Ktor](https://ktor.io/) — HTTP 客户端
+- [Kotlin Serialization](https://github.com/Kotlin/kotlinx.serialization) — JSON 解析
 
 已支持的平台：
 
-- Android 5 及以上
+- Android 5 (API 24) 及以上
 
 ***注：目前没有计划支持 iOS 和 HarmonyOS NEXT**。*<br>
 *桌面版项目地址：<https://github.com/lyswhut/lx-music-desktop>*<br>
-*LX Music 项目发展调整与新项目计划：https://github.com/lyswhut/lx-music-desktop/issues/1912*
+*原 React Native 移动版项目地址：<https://github.com/lyswhut/lx-music-mobile>*<br>
+*LX Music 项目发展调整与新项目计划：<https://github.com/lyswhut/lx-music-desktop/issues/1912>*
 
-软件变化请查看[更新日志](https://github.com/lyswhut/lx-music-mobile/blob/master/CHANGELOG.md)。
+软件变化请查看[更新日志](CHANGELOG.md)。
 
-软件下载请查看 [GitHub Releases](https://github.com/lyswhut/lx-music-mobile/releases)。
+软件下载请查看 [GitHub Releases](https://github.com/guoyujie666/lx-music-compose/releases)。
 
 使用常见问题请参阅[移动版常见问题](https://lyswhut.github.io/lx-music-doc/mobile/faq)。
 
-目前本项目的原始发布地址只有 [**GitHub**](https://github.com/lyswhut/lx-music-mobile/releases)，其他渠道均为第三方转载发布，与本项目无关！
+目前本项目的发布地址只有 [**GitHub**](https://github.com/guoyujie666/lx-music-compose/releases)，其他渠道均为第三方转载发布，与本项目无关！
 
 为了提高使用门槛，本软件内的默认设置、UI 操作不以新手友好为目标，所以使用前建议先根据你的喜好浏览调整一遍软件设置，阅读一遍[音乐播放列表机制](https://lyswhut.github.io/lx-music-doc/mobile/faq/playlist)。
 
@@ -53,9 +55,21 @@
 
 贡献代码步骤：
 
-1. 参照[源码使用方法](https://lyswhut.github.io/lx-music-doc/mobile/use-source-code)设置开发环境；
-2. 克隆本仓库代码并切换至 `dev` 分支进行开发；
+1. 使用 **Android Studio** 打开项目根目录，等待 Gradle sync 完成；
+2. Clone 本仓库代码并切换至 `dev` 分支进行开发；
 3. 提交 PR 至 `dev` 分支。
+
+### 构建
+
+```bash
+# 调试构建
+./gradlew :app:assembleDebug
+
+# 发布构建
+./gradlew :app:assembleRelease
+```
+
+环境要求：JDK 17+、Android SDK 37。
 
 <!--
 ## 用户界面
@@ -64,7 +78,7 @@
 
 ## 项目协议
 
-本项目基于 [Apache License 2.0](https://github.com/lyswhut/lx-music-mobile/blob/master/LICENSE) 许可证发行，以下协议是对于 Apache License 2.0 的补充，如有冲突，以以下协议为准。
+本项目基于 [Apache License 2.0](LICENSE) 许可证发行，以下协议是对于 Apache License 2.0 的补充，如有冲突，以以下协议为准。
 
 ---
 
