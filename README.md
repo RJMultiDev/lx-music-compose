@@ -5,6 +5,7 @@
 <p align="center">
   <a href="https://github.com/guoyujie666/lx-music-compose/releases"><img src="https://img.shields.io/github/v/release/guoyujie666/lx-music-compose" alt="Release version"></a>
   <a href="https://github.com/guoyujie666/lx-music-compose/actions"><img src="https://img.shields.io/github/actions/workflow/status/guoyujie666/lx-music-compose/release.yml" alt="Build status"></a>
+  <img src="https://img.shields.io/badge/Powered%20by-Compose-4285F4?logo=jetpackcompose&logoColor=white" alt="Compose">
   <a href="https://github.com/guoyujie666/lx-music-compose/blob/dev/LICENSE"><img src="https://img.shields.io/github/license/guoyujie666/lx-music-compose" alt="License"></a>
 </p>
 
