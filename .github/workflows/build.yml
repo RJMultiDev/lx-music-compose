@@ -30,9 +30,15 @@ jobs:
       - name: Run tests
         run: ./gradlew test --stacktrace
 
-      - name: Upload APK artifact
+      - name: List generated APKs
+        if: always()
+        run: find app/build/outputs/apk/debug -maxdepth 1 -type f -name '*.apk' -print | sort
+
+      - name: Upload APK artifacts
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: lx-music-compose-debug
-          path: app/build/outputs/apk/debug/app-debug.apk
+          name: lx-music-compose-debug-apks
+          path: app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
+          compression-level: 0
