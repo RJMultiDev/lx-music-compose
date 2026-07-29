@@ -288,7 +288,7 @@ fun SongListCardExpressive(
                         .align(Alignment.BottomEnd)
                         .padding(8.dp),
                     shape = RoundedCornerShape(8.dp),
-                    color = MaterialTheme.colorScheme.surface.withAlpha(0.8f)
+                    color = MaterialTheme.colorScheme.surface.copy(alpha = 0.8f)
                 ) {
                     Row(
                         Modifier.padding(horizontal = 8.dp, vertical = 4.dp),

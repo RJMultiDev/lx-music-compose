@@ -8,6 +8,7 @@ import cn.guoyujie666.music.compose.core.backup.BackupManager
 import cn.guoyujie666.music.compose.core.player.PlayerController
 import cn.guoyujie666.music.compose.core.setting.SettingsManager
 import cn.guoyujie666.music.compose.core.userapi.UserApiManager
+import cn.guoyujie666.music.compose.ui.common.globalSourceNameType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers

@@ -45,6 +45,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import cn.guoyujie666.music.compose.core.model.MusicInfo
 import cn.guoyujie666.music.compose.ui.i18n.t
+import cn.guoyujie666.music.compose.ui.common.globalSourceNameType
 
 /**
  * Dialog for the "切换音源" (toggle source) feature.

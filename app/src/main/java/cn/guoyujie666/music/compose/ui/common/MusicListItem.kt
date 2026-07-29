@@ -87,12 +87,15 @@ fun MusicListItem(
     }
     
     Card(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .combinedClickable(
+                onClick = { onPlay(musicInfo) },
+                onLongClick = { onLongPress(musicInfo) }
+            ),
         shape = MaterialTheme.shapes.medium, // Updated to use M3 standard medium shape (12dp)
         colors = CardDefaults.cardColors(containerColor = backgroundColor),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
-        onClick = { onPlay(musicInfo) },
-        onLongClick = { onLongPress(musicInfo) }
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
         Row(
             modifier = Modifier
@@ -221,7 +224,8 @@ fun MusicListItem(
                     showMyListActions = onMoveTo != null
                 )
             } // end Box
-        } // end Row
+        } // end showAction
+    } // end Row
     } // end Card
 } // end MusicListItem
 

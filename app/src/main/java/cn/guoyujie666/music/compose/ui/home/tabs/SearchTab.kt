@@ -330,47 +330,16 @@ fun SearchBarExpressive(
     isFocused: Boolean, onFocusChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    SearchBar(
-        inputField = { 
-            // Custom search field content - we customize the internal TextField
-            Box(modifier = Modifier.fillMaxWidth()) {
-                OutlinedTextField(
-                    value = query,
-                    onValueChange = onQueryChange,
-                    modifier = Modifier.fillMaxWidth(),
-                    placeholder = { Text(t("search_placeholder"), style = MaterialTheme.typography.bodyLarge) },
-                    leadingIcon = {
-                        Icon(Icons.Filled.Search, null, modifier = Modifier.size(24.dp))
-                    },
-                    trailingIcon = {
-                        if (query.isNotEmpty()) {
-                            IconButton(onClick = onClear) {
-                                Icon(Icons.Outlined.Close, "Clear")
-                            }
-                        }
-                    },
-                    shape = RoundedCornerShape(28.dp),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = if (isFocused) MaterialTheme.colorScheme.primary else Color.Transparent,
-                        unfocusedBorderColor = Color.Transparent,
-                        focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
-                        unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-                    ),
-                    textStyle = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onSurface),
-                    singleLine = true,
-                    maxLines = 1
-                )
-            }
+    cn.guoyujie666.music.compose.ui.common.SearchBar(
+        query = query,
+        onQueryChange = onQueryChange,
+        onSearch = { value ->
+            if (value.isBlank()) onClear() else onSearch(value)
         },
-        expanded = isFocused,
-        onExpandedChange = onFocusChange,
-        modifier = modifier.padding(horizontal = 16.dp).padding(top = 8.dp, bottom = 2.dp),
-        onSearch = { onSearch(it) },
-        emptyContent = { 
-            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text(t("search_placeholder"), style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant)
-            }
-        }
+        placeholder = t("search_placeholder"),
+        modifier = modifier
+            .padding(horizontal = 16.dp)
+            .padding(top = 8.dp, bottom = 2.dp)
+            .onFocusChanged { onFocusChange(it.isFocused) }
     )
 }

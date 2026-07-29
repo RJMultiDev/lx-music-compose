@@ -21,7 +21,7 @@ object LxMusicShapes {
     val extraLarge = RoundedCornerShape(28.dp)     // Search bars, special containers
     
     // Circular/rounded shapes
-    val circle = RoundedCornerShape(50%)           // Avatars, circular buttons
+    val circle = RoundedCornerShape(percent = 50)           // Avatars, circular buttons
     val pill = RoundedCornerShape(50.dp)           // Pills, chips
     
     // Specialized shapes
@@ -47,7 +47,7 @@ val Shapes.extraLarge: RoundedCornerShape
     get() = RoundedCornerShape(28.dp)
 
 val Shapes.circle: RoundedCornerShape
-    get() = RoundedCornerShape(50%)
+    get() = RoundedCornerShape(percent = 50)
 
 val Shapes.pill: RoundedCornerShape
     get() = RoundedCornerShape(50.dp)
