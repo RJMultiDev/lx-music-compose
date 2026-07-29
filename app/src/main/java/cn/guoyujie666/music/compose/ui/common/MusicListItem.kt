@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.MoreVert
@@ -78,16 +80,26 @@ fun MusicListItem(
     onShare: ((MusicInfo) -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .combinedClickable(
-                onClick = { onPlay(musicInfo) },
-                onLongClick = { onLongPress(musicInfo) }
-            )
-            .padding(horizontal = 16.dp, vertical = 10.dp),
-        verticalAlignment = Alignment.CenterVertically
+    val backgroundColor = if (isPlaying) {
+        MaterialTheme.colorScheme.primaryContainer
+    } else {
+        MaterialTheme.colorScheme.surfaceContainerHigh
+    }
+    
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        shape = MaterialTheme.shapes.medium, // Updated to use M3 standard medium shape (12dp)
+        colors = CardDefaults.cardColors(containerColor = backgroundColor),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+        onClick = { onPlay(musicInfo) },
+        onLongClick = { onLongPress(musicInfo) }
     ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
         // Track number / index (or play icon when this song is currently playing)
         if (isPlaying) {
             Icon(
@@ -208,22 +220,23 @@ fun MusicListItem(
                     showPlayLater = onPlayLater != null,
                     showMyListActions = onMoveTo != null
                 )
-            }
-        }
-    }
-}
+            } // end Box
+        } // end Row
+    } // end Card
+} // end MusicListItem
 
 // ── Quality badge (SQ / HQ / Hi-Res) ──────────────────────────
 // Labels ported from RN i18n: quality_lossless_24bit / quality_lossless / quality_high_quality
+// M3E: Uses semantic color tokens instead of hardcoded colors
 
 @Composable
 fun QualityBadge(quality: String) {
     val (label, color) = when (quality) {
-        "flac24bit" -> "24bit" to Color(0xFFE91E63)   // pink — lossless 24bit
-        "flac"      -> "SQ"    to Color(0xFFE91E63)   // pink — lossless
-        "ape"       -> "SQ"    to Color(0xFFE91E63)
-        "wav"       -> "SQ"    to Color(0xFFE91E63)
-        "320k"      -> "HQ"    to Color(0xFFFF9800)   // orange — high quality
+        "flac24bit" -> "24bit" to MaterialTheme.colorScheme.tertiary // Premium lossless - uses tertiary for distinction
+        "flac"      -> "SQ"    to MaterialTheme.colorScheme.primary   // Lossless - primary color for prominence
+        "ape"       -> "SQ"    to MaterialTheme.colorScheme.primary
+        "wav"       -> "SQ"    to MaterialTheme.colorScheme.primary
+        "320k"      -> "HQ"    to MaterialTheme.colorScheme.secondary  // High quality - secondary token
         else -> "" to Color.Unspecified
     }
     if (label.isNotEmpty()) {
@@ -237,14 +250,7 @@ fun QualityBadge(quality: String) {
 }
 
 // ── Source badge (color-coded per source) ─────────────────────
-
-private val sourceColors = mapOf(
-    "kw" to Color(0xFFFF9800),  // orange — 酷我
-    "kg" to Color(0xFF2196F3),  // blue   — 酷狗
-    "tx" to Color(0xFF4CAF50),  // green  — QQ
-    "wy" to Color(0xFFE91E63),  // pink   — 网易
-    "mg" to Color(0xFF9C27B0),  // purple — 咪咕
-)
+// M3E: Uses semantic color tokens for consistency and accessibility
 
 private val sourceLabels = mapOf("kw" to "KW", "kg" to "KG", "tx" to "QQ", "wy" to "WY", "mg" to "MG")
 
@@ -255,7 +261,18 @@ fun SourceBadge(source: String) {
     // Music list items always show abbreviations (KW/KG/QQ/WY/MG);
     // other places use globalSourceNameType + i18n for full names.
     val label = sourceLabels[source] ?: source.uppercase()
-    val color = sourceColors[source] ?: MaterialTheme.colorScheme.secondary
+    
+    // M3E: Map sources to semantic color tokens for consistency
+    // Uses primary/secondary/tertiary variants for visual distinction
+    val color = when (source) {
+        "kw" -> MaterialTheme.colorScheme.secondary           // Kuuwo - secondary
+        "kg" -> MaterialTheme.colorScheme.primary             // Kugou - primary  
+        "tx" -> MaterialTheme.colorScheme.tertiary            // Tencent/TX - tertiary
+        "wy" -> MaterialTheme.colorScheme.error               // NetEase - distinctive error red
+        "mg" -> MaterialTheme.colorScheme.onSurfaceVariant    // Migu - subtle variant
+        else -> MaterialTheme.colorScheme.outlineVariant      // Unknown sources
+    }
+    
     Text(
         text = label,
         style = MaterialTheme.typography.labelSmall,

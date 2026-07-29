@@ -54,10 +54,35 @@ object ColorGenerator {
         val primaryDark: List<Color>,   // 10 items: dark-100..dark-1000
         val primaryLight: List<Color>,  // 10 items: light-100..light-1000
         val theme: Color,               // c-theme
-        val fontColors: List<Color>     // 21 items: c-000..c-1000
+        val fontColors: List<Color>,    // 21 items: c-000..c-1000
+        // M3E additional tokens for full coverage
+        val surface: Color? = null,
+        val onSurface: Color? = null,
+        val surfaceVariant: Color? = null,
+        val onSurfaceVariant: Color? = null,
+        val outline: Color? = null,
+        val outlineVariant: Color? = null,
+        val inverseSurface: Color? = null,
+        val inverseOnSurface: Color? = null,
+        // Dark mode variants
+        val surfaceDark: Color? = null,
+        val onSurfaceDark: Color? = null,
+        val surfaceVariantDark: Color? = null,
+        val onSurfaceVariantDark: Color? = null,
+        val outlineDark: Color? = null,
+        val outlineVariantDark: Color? = null,
+        val inverseSurfaceDark: Color? = null,
+        val inverseOnSurfaceDark: Color? = null
     )
 
-    fun generatePalette(primary: Color, font: Color?, isDark: Boolean): ThemePalette {
+    fun generatePalette(
+        primary: Color, 
+        font: Color?, 
+        isDark: Boolean,
+        surfaceColor: Color? = null,
+        surfaceVariantColor: Color? = null,
+        outlineColor: Color? = null
+    ): ThemePalette {
         val fontColor = font ?: if (isDark) Color(229, 229, 229) else Color(33, 33, 33)
 
         // Dark shades
@@ -88,8 +113,45 @@ object ColorGenerator {
         } else {
             createFontLightColors(fontColor)
         }
+        
+        // Calculate default M3 surface colors if not provided
+        val calculatedSurface = surfaceColor ?: if (isDark) {
+            linearShade(-0.02f, primary.copy(alpha = 1f)) // Subtle tint
+        } else {
+            linearShade(0.98f, Color.White) // Near white
+        }
+        
+        val calculatedSurfaceVariant = surfaceVariantColor ?: if (isDark) {
+            linearShade(-0.05f, primary.copy(alpha = 1f)) // More tint than surface
+        } else {
+            linearShade(0.96f, Color.White) // Off-white
+        }
+        
+        val calculatedOutline = outlineColor ?: linearShade(if (isDark) -0.3f else 0.2f, primary)
 
-        return ThemePalette(primary, darkShades, lightShades, themeColor, fontColors)
+        return ThemePalette(
+            primary = primary,
+            primaryDark = darkShades,
+            primaryLight = lightShades,
+            theme = themeColor,
+            fontColors = fontColors,
+            surface = if (isDark) null else calculatedSurface,
+            onSurface = fontColors[0], // lightest for dark text
+            surfaceVariant = if (isDark) null else calculatedSurfaceVariant,
+            onSurfaceVariant = fontColors[8], // medium grey
+            outline = if (isDark) null else calculatedOutline,
+            outlineVariant = if (isDark) null else linearShade(0.3f, primary),
+            inverseSurface = if (isDark) null else Color(0xFF424242),
+            inverseOnSurface = if (isDark) null else Color(0xFFFAFAFA),
+            surfaceDark = calculatedSurface,
+            onSurfaceDark = fontColors[0],
+            surfaceVariantDark = calculatedSurfaceVariant,
+            onSurfaceVariantDark = fontColors[8],
+            outlineDark = calculatedOutline,
+            outlineVariantDark = linearShade(0.1f, primary),
+            inverseSurfaceDark = Color(0xFFEEEEEE),
+            inverseOnSurfaceDark = Color(0xFF121212)
+        )
     }
 
     private fun createFontLightColors(fontColor: Color): List<Color> {

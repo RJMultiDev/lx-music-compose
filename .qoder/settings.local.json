@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find /var/minis/lx-music-compose -name \"package.json\" -o -name \"*.gradle.kts\" | head -20)",
+      "Bash(sed -n '1000,1200p' /var/minis/shared/hikage-docs/HIKAGE_MD3E_GUIDE.md)",
+      "Read(//var/minis/shared/hikage-docs/**)",
+      "Bash(find /var/minis/lx-music-compose/ui -type f -name \"*.kt\" | head -50)",
+      "Bash(cd /var/minis/lx-music-compose && git remote -v && echo \"---\" && git log --oneline -5)",
+      "Bash(mkdir -p /var/minis/lx-music-compose/.github && cat > /var/minis/lx-music-compose/.github/FUNDING.yml << 'EOF'\n# Support this project\ngithub: guoyujie666\nEOF\n)"
+    ]
+  }
+}

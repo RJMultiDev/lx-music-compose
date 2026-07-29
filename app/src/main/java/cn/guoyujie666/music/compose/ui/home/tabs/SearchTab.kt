@@ -2,12 +2,6 @@
 package cn.guoyujie666.music.compose.ui.home.tabs
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.spring
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -328,50 +322,55 @@ fun SearchTab(onPlay: (cn.guoyujie666.music.compose.core.model.MusicInfo) -> Uni
     } // Box
 }
 
-// ── SearchBarExpressive ───────────────────────────────────────────
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun SearchBarExpressive(
+fun SearchBarExpressive(
     query: String, onQueryChange: (String) -> Unit,
     onSearch: (String) -> Unit, onClear: () -> Unit,
     isFocused: Boolean, onFocusChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val elevation by animateDpAsState(if (isFocused) 8.dp else 2.dp, spring())
-    val containerColor by animateColorAsState(
-        if (isFocused) MaterialTheme.colorScheme.surfaceContainerHighest
-        else MaterialTheme.colorScheme.surfaceContainerHigh, tween(300))
-
-    Surface(
-        modifier = modifier.padding(horizontal = 16.dp).padding(top = 8.dp, bottom = 2.dp)
-            .shadow(elevation, RoundedCornerShape(28.dp)).clip(RoundedCornerShape(28.dp)),
-        color = containerColor, shape = RoundedCornerShape(28.dp)
-    ) {
-        Row(Modifier.fillMaxWidth().padding(horizontal = 8.dp), verticalAlignment = Alignment.CenterVertically) {
-            Icon(Icons.Filled.Search, null,
-                modifier = Modifier.padding(12.dp).size(24.dp),
-                tint = if (isFocused) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant)
-
-            BasicTextField(
-                value = query, onValueChange = onQueryChange,
-                modifier = Modifier.weight(1f).focusRequester(remember { FocusRequester() })
-                    .onFocusChanged { onFocusChange(it.isFocused) }.padding(vertical = 14.dp),
-                textStyle = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onSurface),
-                singleLine = true, cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-                keyboardActions = KeyboardActions(onSearch = { onSearch("") }),
-                decorationBox = { inner ->
-                    Box { if (query.isEmpty()) Text(t("search_placeholder"),
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)); inner() }
-                }
-            )
-
-            AnimatedVisibility(query.isNotEmpty(), enter = fadeIn(tween(150)), exit = fadeOut(tween(150))) {
-                IconButton(onClick = onClear, modifier = Modifier.size(40.dp)) {
-                    Icon(Icons.Outlined.Close, "Clear", Modifier.size(20.dp))
-                }
+    SearchBar(
+        inputField = { 
+            // Custom search field content - we customize the internal TextField
+            Box(modifier = Modifier.fillMaxWidth()) {
+                OutlinedTextField(
+                    value = query,
+                    onValueChange = onQueryChange,
+                    modifier = Modifier.fillMaxWidth(),
+                    placeholder = { Text(t("search_placeholder"), style = MaterialTheme.typography.bodyLarge) },
+                    leadingIcon = {
+                        Icon(Icons.Filled.Search, null, modifier = Modifier.size(24.dp))
+                    },
+                    trailingIcon = {
+                        if (query.isNotEmpty()) {
+                            IconButton(onClick = onClear) {
+                                Icon(Icons.Outlined.Close, "Clear")
+                            }
+                        }
+                    },
+                    shape = RoundedCornerShape(28.dp),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = if (isFocused) MaterialTheme.colorScheme.primary else Color.Transparent,
+                        unfocusedBorderColor = Color.Transparent,
+                        focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                    ),
+                    textStyle = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onSurface),
+                    singleLine = true,
+                    maxLines = 1
+                )
+            }
+        },
+        expanded = isFocused,
+        onExpandedChange = onFocusChange,
+        modifier = modifier.padding(horizontal = 16.dp).padding(top = 8.dp, bottom = 2.dp),
+        onSearch = { onSearch(it) },
+        emptyContent = { 
+            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text(t("search_placeholder"), style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
-    }
+    )
 }

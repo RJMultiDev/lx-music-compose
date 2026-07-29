@@ -228,6 +228,7 @@ fun SongListTab(
 //  CARD  (unchanged — AsyncImage when pic present, gradient fallback)
 // ═════════════════════════════════════════════════════════════════════
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SongListCardExpressive(
     data: SongListCardData,
@@ -235,43 +236,98 @@ fun SongListCardExpressive(
     modifier: Modifier = Modifier
 ) {
     ElevatedCard(
-        modifier = modifier.fillMaxWidth().clickable { onClick() },
-        shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 2.dp)
+        modifier = modifier.fillMaxWidth(),
+        shape = MaterialTheme.shapes.medium,
+        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 2.dp),
+        onClick = onClick
     ) {
         Column {
+            // Card image/gradient area
             Box(
-                modifier = Modifier.fillMaxWidth().aspectRatio(1f)
-                    .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)),
-                contentAlignment = Alignment.Center
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(1f)
             ) {
                 if (!data.pic.isNullOrEmpty()) {
                     AsyncImage(
-                        model = ImageRequest.Builder(LocalContext.current).data(data.pic).crossfade(true).build(),
-                        contentDescription = data.name, modifier = Modifier.fillMaxSize(), contentScale = ContentScale.Crop)
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(data.pic)
+                            .crossfade(true)
+                            .build(),
+                        contentDescription = data.name,
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop
+                    )
                 } else {
-                    Box(Modifier.fillMaxSize()
-                        .background(Brush.linearGradient(colors = cardColors(data.id.hashCode()),
-                            start = androidx.compose.ui.geometry.Offset(0f, 0f),
-                            end = androidx.compose.ui.geometry.Offset(1000f, 1000f))),
+                    // Use M3 semantic colors instead of hardcoded gradients
+                    val semanticColors = listOf(
+                        MaterialTheme.colorScheme.secondaryContainer,
+                        MaterialTheme.colorScheme.tertiaryContainer,
+                        MaterialTheme.colorScheme.primaryContainer,
+                        MaterialTheme.colorScheme.surfaceVariant
+                    )
+                    val bgColor = semanticColors[data.id.hashCode() % semanticColors.size]
+                    
+                    Box(
+                        Modifier.fillMaxSize()
+                            .background(bgColor),
                         contentAlignment = Alignment.Center
                     ) {
-                        Icon(Icons.Rounded.MusicNote, null, Modifier.size(40.dp), tint = Color.White.copy(alpha = 0.7f))
+                        Icon(
+                            Icons.Rounded.MusicNote, 
+                            null, 
+                            Modifier.size(40.dp), 
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+                        )
                     }
                 }
-                Surface(Modifier.align(Alignment.BottomEnd).padding(8.dp), shape = RoundedCornerShape(8.dp), color = Color.Black.copy(alpha = 0.55f)) {
-                    Row(Modifier.padding(horizontal = 8.dp, vertical = 4.dp), verticalAlignment = Alignment.CenterVertically) {
-                        Icon(Icons.AutoMirrored.Filled.PlaylistPlay, null, Modifier.size(12.dp), tint = Color.White)
+                
+                // Play count badge using semantic colors
+                Surface(
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(8.dp),
+                    shape = RoundedCornerShape(8.dp),
+                    color = MaterialTheme.colorScheme.surface.withAlpha(0.8f)
+                ) {
+                    Row(
+                        Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.PlaylistPlay, 
+                            null, 
+                            Modifier.size(12.dp), 
+                            tint = MaterialTheme.colorScheme.onSurface
+                        )
                         Spacer(Modifier.width(4.dp))
-                        Text(formatCount(data.playCount), style = MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp), color = Color.White)
+                        Text(
+                            formatCount(data.playCount), 
+                            style = MaterialTheme.typography.labelSmall, 
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
                     }
                 }
             }
+            
+            // Card content
             Column(modifier = Modifier.padding(horizontal = 10.dp, vertical = 10.dp)) {
-                Text(data.name, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold, maxLines = 2, overflow = TextOverflow.Ellipsis)
+                Text(
+                    data.name, 
+                    style = MaterialTheme.typography.titleMedium, 
+                    fontWeight = FontWeight.SemiBold, 
+                    maxLines = 2, 
+                    overflow = TextOverflow.Ellipsis
+                )
                 if (data.author.isNotEmpty()) {
                     Spacer(Modifier.height(2.dp))
-                    Text(data.author, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    Text(
+                        data.author, 
+                        style = MaterialTheme.typography.bodySmall, 
+                        color = MaterialTheme.colorScheme.onSurfaceVariant, 
+                        maxLines = 1, 
+                        overflow = TextOverflow.Ellipsis
+                    )
                 }
             }
         }
@@ -282,12 +338,6 @@ private fun formatCount(n: Long): String = when {
     n >= 100_000_000L -> "${"%.1f".format(n / 100_000_000.0)}亿"
     n >= 10_000L -> "${"%.1f".format(n / 10_000.0)}万"
     else -> n.toString()
-}
-
-private fun cardColors(seed: Int): List<Color> {
-    val hues = listOf(210f, 270f, 340f, 30f, 160f, 50f, 190f, 290f)
-    val h = hues[seed.absoluteValue % hues.size]
-    return listOf(Color.hsl(h, 0.55f, 0.45f), Color.hsl((h + 30) % 360, 0.50f, 0.35f))
 }
 
 data class SongListCardData(

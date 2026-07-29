@@ -18,7 +18,11 @@ object ThemeRegistry {
         val isDark: Boolean,
         val primary: Color,
         val font: Color? = null,
-        val backgroundImage: String? = null
+        val backgroundImage: String? = null,
+        // M3E additional palette colors for full token coverage
+        val surfaceColor: Color? = null,
+        val surfaceVariantColor: Color? = null,
+        val outlineColor: Color? = null
     )
 
     val themes: List<ThemeConfig> = listOf(
@@ -51,10 +55,17 @@ object ThemeRegistry {
 
     /**
      * Generate a Material 3 ColorScheme from a ThemeConfig.
-     * Maps the generated palette to M3 color roles.
+     * Maps the generated palette to M3 color roles with full token coverage.
      */
     fun buildColorScheme(config: ThemeConfig): ColorScheme {
-        val palette = ColorGenerator.generatePalette(config.primary, config.font, config.isDark)
+        val palette = ColorGenerator.generatePalette(
+            config.primary, 
+            config.font, 
+            config.isDark,
+            config.surfaceColor,
+            config.surfaceVariantColor,
+            config.outlineColor
+        )
         return if (config.isDark) buildDarkScheme(palette) else buildLightScheme(palette)
     }
 
@@ -63,11 +74,12 @@ object ThemeRegistry {
         val onPrimary = Color.White
         val primaryContainer = p.primaryLight[5] // light-600
         val onPrimaryContainer = p.primaryDark[3] // dark-400
-        val surface = Color(0xFFFAFAFA)
-        val onSurface = p.fontColors[20]  // c-1000 (darkest font)
+        // Use generated palette colors instead of hardcoding
+        val surface = p.surface ?: Color(0xFFFAFAFA)
+        val onSurface = p.onSurface ?: p.fontColors[20]  // c-1000 (darkest font)
         val background = Color.White
-        val surfaceVariant = Color(0xFFF5F5F5)
-        val onSurfaceVariant = p.fontColors[12] // c-600
+        val surfaceVariant = p.surfaceVariant ?: Color(0xFFF5F5F5)
+        val onSurfaceVariant = p.onSurfaceVariant ?: p.fontColors[12] // c-600
 
         return lightColorScheme(
             primary = primary,
@@ -92,10 +104,10 @@ object ThemeRegistry {
             onSurfaceVariant = onSurfaceVariant,
             background = background,
             onBackground = onSurface,
-            outline = Color(0xFFBDBDBD),
-            outlineVariant = Color(0xFFE0E0E0),
-            inverseSurface = Color(0xFF424242),
-            inverseOnSurface = Color(0xFFFAFAFA),
+            outline = p.outline ?: Color(0xFFBDBDBD),
+            outlineVariant = p.outlineVariant ?: Color(0xFFE0E0E0),
+            inverseSurface = p.inverseSurface ?: Color(0xFF424242),
+            inverseOnSurface = p.inverseOnSurface ?: Color(0xFFFAFAFA),
             inversePrimary = p.primaryLight[3]
         )
     }
@@ -105,11 +117,11 @@ object ThemeRegistry {
         val onPrimary = Color(0xFF1A1A1A)
         val primaryContainer = p.primaryDark[2] // dark-300
         val onPrimaryContainer = p.primaryLight[5]
-        val surface = Color(0xFF121212)
-        val onSurface = p.fontColors[0] // c-000 (lightest font for dark)
+        val surface = p.surfaceDark ?: Color(0xFF121212)
+        val onSurface = p.onSurfaceDark ?: p.fontColors[0] // c-000 (lightest font for dark)
         val background = Color(0xFF121212)
-        val surfaceVariant = Color(0xFF2D2D2D)
-        val onSurfaceVariant = p.fontColors[8] // c-400
+        val surfaceVariant = p.surfaceVariantDark ?: Color(0xFF2D2D2D)
+        val onSurfaceVariant = p.onSurfaceVariantDark ?: p.fontColors[8] // c-400
 
         return darkColorScheme(
             primary = primary,
@@ -134,10 +146,10 @@ object ThemeRegistry {
             onSurfaceVariant = onSurfaceVariant,
             background = background,
             onBackground = onSurface,
-            outline = Color(0xFF757575),
-            outlineVariant = Color(0xFF424242),
-            inverseSurface = Color(0xFFEEEEEE),
-            inverseOnSurface = Color(0xFF121212),
+            outline = p.outlineDark ?: Color(0xFF757575),
+            outlineVariant = p.outlineVariantDark ?: Color(0xFF424242),
+            inverseSurface = p.inverseSurfaceDark ?: Color(0xFFEEEEEE),
+            inverseOnSurface = p.inverseOnSurfaceDark ?: Color(0xFF121212),
             inversePrimary = p.primaryDark[1]
         )
     }
